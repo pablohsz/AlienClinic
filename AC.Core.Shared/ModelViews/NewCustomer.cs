@@ -1,12 +1,9 @@
-﻿
-
-namespace AC.Core.Domain
+﻿namespace AC.Core.Shared.ModelViews
 {
-    public class Customer
+    public class NewCustomer
     {
         #region Private fields
 
-        public int Id { get; set; }
 
         public string Name { get; set; }
 
@@ -15,10 +12,6 @@ namespace AC.Core.Domain
         public string Phone { get; set; }
 
         public string SocialId { get; set; }
-
-        public DateTime Created { get; set; }
-
-        public DateTime? Updated { get; set; }
 
         #endregion Private fields
     }

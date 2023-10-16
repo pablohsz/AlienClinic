@@ -1,4 +1,6 @@
 ﻿using AC.Core.Domain;
+using AC.Core.Shared.ModelViews;
+using AC.Manager.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -8,50 +10,58 @@ namespace AC.WebApi.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
+
+        private readonly ICustomerManager clientManager;
+
+        
+
+        public CustomerController(ICustomerManager clientManager)
+        {
+            this.clientManager = clientManager;
+        }
+
+
         // GET: api/<CustomerController>
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Ok(new List<Customer>()
-            {
-                new Customer
-                {
-                    Id = 1,
-                    Name = "Francis Abadia",
-                    Birthdate = new DateTime(1980, 01, 01)
-                },
-                new Customer
-                {
-                    Id = 2,
-                    Name = "Francis Abadia",
-                    Birthdate = new DateTime(1980, 01, 01)
-                }
-            });
+            return Ok(await clientManager.GetCustomersAsync());
         }
 
         // GET api/<CustomerController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            return Ok(await clientManager.GetCustumerAsync(id)); ;
         }
 
         // POST api/<CustomerController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post(NewCustomer newCustomer)
         {
+            var inputedCustumer = await clientManager.InsertCustumerAsync(newCustomer);
+            return CreatedAtAction(nameof(Get), new { id = inputedCustumer.Id }, inputedCustumer);
+
         }
 
         // PUT api/<CustomerController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public async Task<IActionResult> Put(AlterCustomer alterCustomer)
         {
+            var updatedCustomer = await clientManager.UpdateCustumerAsync(alterCustomer);
+            if(updatedCustomer == null)
+            {
+                return NotFound();
+            }
+            return Ok(updatedCustomer);
         }
 
         // DELETE api/<CustomerController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            await clientManager.DeleteCustumerAsync(id);
+            return NoContent();
         }
     }
 }

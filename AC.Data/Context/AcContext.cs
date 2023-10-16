@@ -12,5 +12,11 @@ namespace AC.Data.Context
         }
 
         public DbSet<Customer> Customers { get; set; }
+
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.EnableSensitiveDataLogging();
+        }
     }
 }
